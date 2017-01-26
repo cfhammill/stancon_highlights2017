@@ -1,13 +1,13 @@
 ---
 title: "StanCon 2017"
 author: "Chris Hammill"
-date: "January 25, 2017"
+date: "January 26, 2017"
 output: 
   beamer_presentation:
     fig_caption: no
     includes: 
       in_header: 
-        hf-tikz.sty
+        pres.sty
     md_extensions: +link_attributes
 ---
 
@@ -18,19 +18,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ## StanCon 2017
 
 - First annual conference for the Stan Probabilistic Programming Language
-- Talks highligted new developments, case-studies, and future directions
-- Got to meet prominent applied Bayesian statisticians
+- Talks highlighted new developments, case-studies, and future directions
+- Got to meet prominent applied bayesian statisticians
 
 ## What is bayesian statistics
 
-> bayesian statistics is the largest field devoted to ignoring a denominator  
-> -unknown 
-
-## What is bayesian statistics
-
+- A field of statistics devoted to assigning probabilities to parameters, and
+  updating in response to new data
+- Contrast with null hypothesis testing which assigns probabilities to data
 - A logical consequence of two important concepts:
     1. The subjective interpretation of probability
-    2. Bayes Theorem
+    2. Bayes' Theorem
 
 ## The subjective interpretation of probability
 
@@ -42,10 +40,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 $$ P(\theta | D) = \frac{\tikzmarkin{a}P(D | \theta)\tikzmarkend{a} *  P(\theta)}{P(D)} $$
 
->1. $P(\theta | D)$: Posterior probability of the parameters
->2. $P(D | \theta)$: The likelihood of the data given
->3. $P(\theta)$: The prior probability of the parameters
->4. $P(D)$: The probability of the data (normalizing constant)
+1. $P(D | \theta)$: The likelihood of the data given the parameters
+
+## Bayes Theorem
+
+$$ P(\theta | D) = \frac{P(D | \theta) *  \tikzmarkin{b}P(\theta)\tikzmarkend{b}}{P(D)} $$
+
+1. $P(D | \theta)$: The likelihood of the data given given the parameters
+2. $P(\theta)$: The prior probability of the parameters
+
+## Bayes Theorem
+
+$$ P(\theta | D) = \frac{P(D | \theta) *  P(\theta)}{\tikzmarkin{c}P(D)\tikzmarkend{c}} $$
+
+1. $P(D | \theta)$: The likelihood of the data given given the parameters
+2. $P(\theta)$: The prior probability of the parameters
+3. $P(D)$: The probability of the data (normalizing constant)
+
+## Bayes Theorem
+
+$$ \tikzmarkin{d}P(\theta | D)\tikzmarkend{d} = \frac{P(D | \theta) *  P(\theta)}{P(D)} $$
+
+1. $P(D | \theta)$: The likelihood of the data given given the parameters
+2. $P(\theta)$: The prior probability of the parameters
+3. $P(D)$: The probability of the data (normalizing constant)
+4. $P(\theta | D)$: Posterior probability of the parameters
 
 ## The Posterior
 
@@ -55,14 +74,26 @@ $$ P(\theta | D) = \frac{\tikzmarkin{a}P(D | \theta)\tikzmarkend{a} *  P(\theta)
 
 ## Conjugate Bayesian Analysis
 
+- If we carefully choose our models carefully the posterior can be computed directly from
+  the prior and the data.
+
 ## ~~Conjugate Bayesian Analysis~~
 
-- Conjugate Bayesian analysis works for only a small subset of cases
+- If we carefully choose our models carefully the posterior can be computed directly from
+  the prior and the data.
+- Only works for a small class of models
+- We need something more general
 
 ## General Solution
 
+- Approximate
 - Sample from the unnormalized posterior, estimate the normalizing constant
 - Sampling is unbiased in ideal case, but can be troublesome in practice
+
+## What is bayesian statistics
+
+> bayesian statistics is the largest field devoted to ignoring a denominator  
+> -unknown 
 
 ## History
 
@@ -70,11 +101,15 @@ $$ P(\theta | D) = \frac{\tikzmarkin{a}P(D | \theta)\tikzmarkend{a} *  P(\theta)
 to sample from arbitrary distributions. The original algorithm is still in use
 today
 - Gibbs-Sampling: A successor to Metropolis-Hastings became democratized in the form
-of **B**ayesian **I**nference **U**sing **G**ibs **S**ampling (BUGS), a software
+of **B**ayesian Inference **U**sing **G**ibs **S**ampling (BUGS), a software
 package that allowed users with personal computers to sample posteriors.
 - Hamilitonian-Monte-Carlo: A tool from physics imported by U of T's own
 Radford Neal sped up sampling enough to be practical. Made available by
 the Stan programming language.
+
+## Stan
+
+![](stan_logo.png)
 
 ## Stan
 
@@ -99,7 +134,7 @@ Stan Provides:
     1. Generalize from sample to population
     2. Generalize from controls to treatment
     3. Generalize from measurement to construct
-- Stess unbiased estimation is less important than typically taught
+- Stressed unbiased estimation is less important than typically taught
   in stats education. Publication biases and forking paths in modelling
   mean all estimates are biased.
   
@@ -162,12 +197,14 @@ Stan Provides:
 - Statistics comes down to estimating expectations from
   probability distributions
   
-$$ E|f(x)| = \int f(x)P(x)dx $$
+$$ \mathbb{E}|f(x)| = \int f(x)P(x)dx $$
 
 - To compute expectations quickly you need to focus on regions of
   parameter space where $f(x)P(x)$ is high
 
-## Estimating Expectations  
+## Estimating Expectations
+
+$$ \mathbb{E}|f(x)| = \int f(x)P(x)dx $$
 
 - In most cases the exact form of $f(x)$ is difficult to capitalize on
 - So you decide to focus on where $P(x)$ is high... Right?
@@ -175,7 +212,7 @@ $$ E|f(x)| = \int f(x)P(x)dx $$
 ## High Dimensional Geometry
 
 - Unfortunately no!
-- In higher dimensions the volume occupied by the model is small
+- In higher dimensions the volume occupied by the mode is small
 - Shrinks exponentially as number of dimensions increases
 
 ## High Dimensional Geometry
@@ -184,17 +221,24 @@ $$ E|f(x)| = \int f(x)P(x)dx $$
 
 ## High Dimensional Geometry
 
-- Unfortunately no!
-- In higher dimensions the volume occupied by the model is small
+$$ \mathbb{E}|f(x)| = \int f(x)P(x)dx $$
+
+- In higher dimensions the volume occupied by the mode is small
 - Shrinks exponentially as number of dimensions increases
 - Integration volume $dx$ comes to dominate the integral
 
 ## Typical Set
 
+$$ \mathbb{E}|f(x)| = \int f(x)~\tikzmarkin{e}P(x)dx\tikzmarkend{e} $$
+
 - As the dimensions increase, the region where $dx$ is large
-  and $P(x)$ isn't negligible contracts to surface.
-- This surface is called the typical set
+  and $P(x)$ isn't negligible contracts to thin shell.
+- This shell is called the typical set
 - Markov Chain Monte Carlo aims to explore this set
+
+## Typical Set
+
+![](metropolis.png)
 
 ## Metropolis-Hastings
 
@@ -208,6 +252,10 @@ $$ E|f(x)| = \int f(x)P(x)dx $$
   almost always going to fall into zones with very low $P(x)$
 - Solution is to reduce step size, but this means the typical
   set gets explored very slowly.
+  
+## Metropolis-Hastings
+
+![](metropolis.png)
   
 ## Hamiltonian Monte Carlo
 
@@ -230,6 +278,30 @@ $$ E|f(x)| = \int f(x)P(x)dx $$
   chain orbits
 - Drawing energies from the correct distribution allows you to explore
   the typical set.
+- Big improvements to come with better choices of energy distribution
+
+## Take-Aways
+
+- Bayesian statistics is getting more practical every day
+- Hybrid parametric non-parametric techniques could be highly
+  beneficial for modelling a variety of phenomena
+- Many tools to take the pain out of model fitting exist (rstanarm, rethinking), 
+  so don't be afraid to try them out.
+- Never underestimate a good intuitive explanation
+
+## More Information
+
+**Talks**: http://mc-stan.org/events/stancon  
+
+**Notebooks with code**: https://github.com/stan-dev/stancon_talks  
+
+**Betancourt's Conceptual Introduction to HMC**: https://arxiv.org/pdf/1701.02434.pdf
+
+---
+
+Questions?
+
+
 
 
   
